@@ -74,7 +74,8 @@ class MyRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(response_json.encode('utf-8'))
 
 
-if __name__ == '__main__':
+
+def start_host_server(port):
     print("starting host server...")
     hostname = socket.gethostname()
     addresses = socket.getaddrinfo(hostname, None, socket.AF_INET)
@@ -83,7 +84,11 @@ if __name__ == '__main__':
         if address[0] == socket.AF_INET:
             ipv4_address = address[4][0]
             break
-    port = 8081
     server = HTTPServer((ipv4_address, port), MyRequestHandler)
     print(f'Started server at http://{ipv4_address}:{port}')
     server.serve_forever()
+
+if __name__ == '__main__':
+    #Use this when this file is executed alone
+    #start_host_server(8180)
+    pass

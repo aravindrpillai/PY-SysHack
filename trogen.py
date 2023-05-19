@@ -46,7 +46,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
 '''
 #Function to start the server on the guest machine
 '''
-def start_server(port=8080):
+def start_trogen_server(port):
     print("starting server...")
     host = get_ipv4_address()
     server = HTTPServer((host, port), MyRequestHandler)
@@ -57,8 +57,7 @@ def start_server(port=8080):
 #Function to poll and notify if there is a change in IPV4
 #If there is a chnage, this will inform the host about the new IP update
 '''
-def poll_and_notify_ipv4_address_change(interval=60):
-    url = "http://host_server_url:8081/"
+def poll_and_notify_ipv4_address_change(host_url, interval):
     current_address = None
     while True:
         new_address = get_ipv4_address()
@@ -74,7 +73,7 @@ def poll_and_notify_ipv4_address_change(interval=60):
                 "sys_name":hostname,
                 "sys_full_name":fqdn
             }
-            response = requests.post(url, data=json.dumps(data), headers=headers)
+            response = requests.post(host_url, data=json.dumps(data), headers=headers)
             if response.status_code == 200:
                 print("successfully informed")
             else:
@@ -84,8 +83,8 @@ def poll_and_notify_ipv4_address_change(interval=60):
 
 
 if __name__ == '__main__':
-    server_thread = threading.Thread(target=start_server, args=(8080,))
-    ip_poll_thread = threading.Thread(target=poll_and_notify_ipv4_address_change, args=(10,))
+    server_thread = threading.Thread(target=start_trogen_server, args=(9090,))
+    ip_poll_thread = threading.Thread(target=poll_and_notify_ipv4_address_change, args=("http://the_host_server_url:8180", 10,))
     ip_poll_thread.start()
     server_thread.start()
 
